@@ -1,1 +1,1 @@
-web: go-getting-started
+web: go-getting-started-zero
