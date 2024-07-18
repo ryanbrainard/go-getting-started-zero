@@ -4,9 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/gin-gonic/gin"
-	_ "github.com/heroku/x/hmetrics/onload"
 )
 
 func main() {
@@ -16,14 +13,13 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "static")
-
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
-
-	router.Run(":" + port)
+	err := http.ListenAndServe("0.0.0.0:"+port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write([]byte("hi golang"))
+		if err != nil {
+			panic(err)
+		}
+	}))
+	if err != nil {
+		panic(err)
+	}
 }
